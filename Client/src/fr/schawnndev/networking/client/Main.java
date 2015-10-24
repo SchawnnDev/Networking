@@ -13,10 +13,10 @@
 
 package fr.schawnndev.networking.client;
 
-import fr.schawnndev.networking.client.lang.Messages;
 import fr.schawnndev.networking.client.network.NetworkClient;
 
 import javax.swing.*;
+import javax.swing.text.DefaultCaret;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -24,7 +24,7 @@ import java.awt.event.ActionListener;
 public class Main extends JFrame {
 
     private static Main instance;
-    private JTextPane chatPane;
+    private JTextArea chatPane;
     private JTextField userChatField;
     private JList users;
     private JButton sendButton;
@@ -67,6 +67,14 @@ public class Main extends JFrame {
     }
 
     void initView() {
+        // Set default look
+
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         // Central panel
         JPanel jPanel = new JPanel();
         getContentPane().add(jPanel);
@@ -83,8 +91,10 @@ public class Main extends JFrame {
         jPanel.add(chatPanel, BorderLayout.CENTER);
 
         // Chat ui
-        chatPane = new JTextPane();
+        chatPane = new JTextArea();
         chatPane.setEditable(false);
+        ((DefaultCaret) chatPane.getCaret()).setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+
         JScrollPane chatScrollPane = new JScrollPane(chatPane);
         chatScrollPane.setBorder(BorderFactory.createTitledBorder("Chat"));
         chatPanel.add(chatScrollPane, BorderLayout.CENTER);
@@ -105,7 +115,7 @@ public class Main extends JFrame {
 
                 if (text != null && text.length() > 0) {
                     System.out.println("button text: " + text);
-                    Messages.sendMessage(text); // Send
+                   // Messages.sendMessage(text); // Send
                     userChatField.setText(""); // Clear
                 }
 

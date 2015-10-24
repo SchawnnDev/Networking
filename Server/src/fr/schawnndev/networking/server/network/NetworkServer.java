@@ -14,6 +14,9 @@
 package fr.schawnndev.networking.server.network;
 
 import fr.schawnndev.networking.server.Main;
+import fr.schawnndev.networking.server.packets.Packet;
+import fr.schawnndev.networking.server.packets.PacketDictionary;
+import fr.schawnndev.networking.server.packets.PacketType;
 
 import java.io.DataInputStream;
 import java.io.EOFException;
@@ -65,9 +68,12 @@ public class NetworkServer {
 
                                     try {
                                         DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
-                                        String response = dataInputStream.readUTF();
-                                        //TODO: parse
-                                        Main.getInstance().log(response);
+                                        String rawData = dataInputStream.readUTF();
+                                        String[] data = rawData.trim().split(";");
+
+                                        PacketType packetType = PacketType.valueOf(data[0]);
+                                        Packet packet = PacketDictionary.translatePacketType(packetType, data);
+
                                     } catch (EOFException e) {
                                         err = true;
                                         Main.getInstance().log("L'utilisateur " + socket.getRemoteSocketAddress() + " s'est deconnecte!");

@@ -13,8 +13,11 @@
 
 package fr.schawnndev.networking.client.network;
 
-import fr.schawnndev.networking.client.lang.Messages;
+import fr.schawnndev.networking.client.packets.Packet;
+import fr.schawnndev.networking.client.packets.PacketDictionary;
+import fr.schawnndev.networking.client.packets.PacketType;
 
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
@@ -52,8 +55,6 @@ public class NetworkClient {
         try {
             socket = new Socket(ipAdress, port);
             dataOutputStream = new DataOutputStream(socket.getOutputStream());
-            dataOutputStream.writeUTF(pseudo + " : " + "Salut, salut !");
-            dataOutputStream.writeUTF(pseudo + " : " + "Nice !");
         } catch (IOException e) {
             e.printStackTrace();
             return;
@@ -66,17 +67,17 @@ public class NetworkClient {
 
                 while (true) {
 
-                    if (Messages.getMessages().size() > 0) {
+                    try {
+                        DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
+                        String rawData = dataInputStream.readUTF();
+                        String[] data = rawData.trim().split(";");
 
-                        System.out.println("message > 0");
+                        PacketType packetType = PacketType.valueOf(data[0]);
+                        Packet packet = PacketDictionary.translatePacketType(packetType, data);
 
-                        for (String msg : Messages.getMessages()) {
-                            writeMessage(msg);
-                            System.out.println("Sending: " + msg);
-                        }
 
-                        Messages.getMessages().clear();
-
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
 
                 }

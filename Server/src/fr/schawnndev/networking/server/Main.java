@@ -16,6 +16,7 @@ package fr.schawnndev.networking.server;
 import fr.schawnndev.networking.server.network.NetworkServer;
 
 import javax.swing.*;
+import javax.swing.text.DefaultCaret;
 import java.awt.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -75,6 +76,14 @@ public class Main extends JFrame {
     }
 
     void initView() {
+        // Set default look
+
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         // Central panel
         JPanel jPanel = new JPanel();
         getContentPane().add(jPanel);
@@ -82,6 +91,9 @@ public class Main extends JFrame {
 
         consoleArea = new JTextArea();
         consoleArea.setEditable(false);
+
+        ((DefaultCaret) consoleArea.getCaret()).setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+
 
         // Console view
         JScrollPane consoleScrollPane = new JScrollPane(consoleArea);
